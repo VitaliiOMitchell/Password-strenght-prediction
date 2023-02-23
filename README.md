@@ -1,1 +1,1 @@
-# Password-strenght-prediction
+# Password-strength-prediction
