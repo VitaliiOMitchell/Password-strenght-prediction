@@ -20,17 +20,17 @@ class Password_update(BaseModel):
 
 app = FastAPI()
 LR_model = joblib.load('LogisticRegression_model.jl')
-db = []
+pass_history = []
 
 @app.get('/password')
 async def info():
-    if len(db) == 0:
+    if len(pass_history) == 0:
         raise HTTPException(
             status_code=404,
             detail='Nothing was found'
         )
     else:
-        return db
+        return pass_history
 
 @app.post('/password', response_model=Stren)
 async def set_password(info: User_model):
@@ -53,7 +53,7 @@ async def set_password(info: User_model):
     else:
         #password_container.append(pas)
         pred = pipe.predict(pas['user_password'])[0]
-        db.append(pas)
+        pass_history.append(pas)
         if pred == 0:
             return {'strength': 'Weak'}
         if pred == 1:
@@ -63,9 +63,9 @@ async def set_password(info: User_model):
     
 @app.delete('/password/{user_id}')
 async def delete_info(user_id: UUID):
-    for user in db:
+    for user in pass_history:
         if user['id'] == user_id:
-            db.remove(user)
+            pass_history.remove(user)
             raise HTTPException(
                 status_code=200,
                 detail='User was removed'
@@ -78,7 +78,7 @@ async def delete_info(user_id: UUID):
 @app.put('/passwor/{user_id}')
 async def update_password(pas_update: Password_update, user_id: UUID):
     new_pas = pas_update.dict()
-    for user in db:
+    for user in pass_history:
         if user_id == user['id']:
             if len(new_pas.get('user_password')) < 5:
                 raise HTTPException(
