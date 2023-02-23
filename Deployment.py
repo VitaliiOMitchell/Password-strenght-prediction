@@ -44,14 +44,12 @@ async def set_password(info: User_model):
             status_code = 400,
             detail = 'You cannot use spaces'
         )
-    #if len(pas['user_password']) < 5:
     if len(pas.get('user_password')) < 5:
         raise HTTPException(
             status_code=400,
             detail='Lenght of your password must be greater than 4'
         )
     else:
-        #password_container.append(pas)
         pred = pipe.predict(pas['user_password'])[0]
         pass_history.append(pas)
         if pred == 0:
