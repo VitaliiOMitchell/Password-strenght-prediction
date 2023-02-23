@@ -1,8 +1,0 @@
-numpy
-scikit-learn
-matplotlib
-pandas
-fastapi
-uvicorn
-httptools
-uvloop
